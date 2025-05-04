@@ -1,3 +1,3 @@
-import sum from './sum.cpp';
-
-sum(); // should log: Hello from /path/to/sum.cpp
+const modFactory = await import('./sum.cpp');
+const mod = await modFactory.default(); // instantiate the module
+console.log(mod.sum(2, 3));

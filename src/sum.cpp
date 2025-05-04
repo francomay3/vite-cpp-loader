@@ -1,2 +1,9 @@
-// sum.cpp — content doesn’t matter yet
-int sum(int a, int b) { return a + b; }
+#include <emscripten/bind.h>
+
+int sum(int a, int b) {
+  return a + b;
+}
+
+EMSCRIPTEN_BINDINGS(my_module) {
+  emscripten::function("sum", &sum);
+}
