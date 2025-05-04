@@ -30,8 +30,13 @@ export default function cppWasm(): Plugin {
 
       console.log('Found C++ functions:', functions);
 
-      const jsOut = id + '.js';
-      const wasmOut = id + '.wasm';
+      // Create output directory if it doesn't exist
+      const outputDir = path.join(process.cwd(), 'node_modules', '.cpp-wasm');
+      await fs.mkdir(outputDir, { recursive: true });
+
+      const baseName = path.basename(id, '.cpp');
+      const jsOut = path.join(outputDir, baseName + '.js');
+      const wasmOut = path.join(outputDir, baseName + '.wasm');
 
       // Compile the .cpp file using em++
       const result = spawnSync('em++', [
@@ -61,7 +66,7 @@ export default function cppWasm(): Plugin {
 
       // Return re-export stub with function information
       return `
-        import factory from './${path.basename(jsOut)}';
+        import factory from '${jsOut}';
         const mod = await factory();
         ${exports}
         export default mod;
