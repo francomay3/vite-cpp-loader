@@ -10,16 +10,20 @@ std::string greet(const std::string& name) {
     return "Hello, " + name + "!";
 }
 
-std::vector<int> fibonacci(int n) {
-    std::vector<int> result;
-    if (n <= 0) return result;
+std::string fibonacci(int n) {
+    if (n <= 0) return "";
     
-    result.push_back(0);
+    std::string result = "0";
     if (n == 1) return result;
     
-    result.push_back(1);
+    result += ",1";
+    int prev = 0;
+    int curr = 1;
     for (int i = 2; i < n; i++) {
-        result.push_back(result[i-1] + result[i-2]);
+        int next = prev + curr;
+        result += "," + std::to_string(next);
+        prev = curr;
+        curr = next;
     }
     return result;
 }

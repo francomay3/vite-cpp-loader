@@ -159,6 +159,8 @@ The plugin automatically converts C++ types to TypeScript types:
 | long     | number          |
 | short    | number          |
 
+**Note:** Only simple types can be used as function return types. Complex types (like STL containers, custom classes, etc.) are not currently supported.
+
 ## Generated TypeScript Declarations
 
 For each C++ module, a TypeScript declaration file (`.d.ts`) is automatically generated in the same directory as the C++ file. For example, if you have `math.cpp`, a `math.cpp.d.ts` file will be generated. These files contain the type definitions that enable TypeScript type checking and IntelliSense.
