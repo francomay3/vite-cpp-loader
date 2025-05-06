@@ -61,27 +61,18 @@ To get proper C++ IntelliSense in VSCode, create a `.vscode/c_cpp_properties.jso
 {
   "configurations": [
     {
-      "name": "Mac",
+      "name": "Emscripten",
       "includePath": [
         "${workspaceFolder}/**",
-        "/usr/local/opt/emscripten/libexec/emscripten/system/include/**"
+        "/usr/local/opt/emscripten/libexec/emscripten/system/include/**",
+        "C:/emsdk/upstream/emscripten/system/include/**",
+        "~/emsdk/upstream/emscripten/system/include/**"
       ],
       "macFrameworkPath": [],
       "compilerPath": "/usr/local/opt/emscripten/libexec/emscripten/emcc",
       "cStandard": "c17",
       "cppStandard": "c++17",
-      "intelliSenseMode": "macos-clang-x64"
-    },
-    {
-      "name": "Win32",
-      "includePath": [
-        "${workspaceFolder}/**",
-        "C:/emsdk/upstream/emscripten/system/include/**"
-      ],
-      "compilerPath": "C:/emsdk/upstream/emscripten/emcc.bat",
-      "cStandard": "c17",
-      "cppStandard": "c++17",
-      "intelliSenseMode": "windows-msvc-x64"
+      "intelliSenseMode": "clang-x64"
     }
   ],
   "version": 4
