@@ -80,29 +80,6 @@ To get proper C++ IntelliSense in VSCode, create a `.vscode/c_cpp_properties.jso
 }
 ```
 
-To find the correct Emscripten include path:
-
-1. **macOS**:
-   ```bash
-   # If installed via Homebrew
-   ls /usr/local/opt/emscripten/libexec/emscripten/system/include
-   
-   # If installed via emsdk
-   ls ~/emsdk/upstream/emscripten/system/include
-   ```
-
-2. **Windows**:
-   ```bash
-   # Usually located at
-   dir C:\emsdk\upstream\emscripten\system\include
-   ```
-
-3. **Linux**:
-   ```bash
-   # Usually located at
-   ls ~/emsdk/upstream/emscripten/system/include
-   ```
-
 ## Installation
 
 ```bash
@@ -181,6 +158,17 @@ The plugin automatically converts C++ types to TypeScript types:
 | unsigned | number          |
 | long     | number          |
 | short    | number          |
+
+## Generated TypeScript Declarations
+
+For each C++ module, a TypeScript declaration file (`.d.ts`) is automatically generated in the same directory as the C++ file. For example, if you have `math.cpp`, a `math.cpp.d.ts` file will be generated. These files contain the type definitions that enable TypeScript type checking and IntelliSense.
+
+**Important**: These generated declaration files should not be modified manually as they are automatically generated and will be overwritten. It's recommended to add them to your `.gitignore` file:
+
+```gitignore
+# Generated TypeScript declarations for C++ modules
+*.cpp.d.ts
+```
 
 ## Troubleshooting
 

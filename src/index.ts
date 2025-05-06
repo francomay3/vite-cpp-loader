@@ -81,39 +81,40 @@ function cppToTsType(cppType: string): string {
 
 // Function to generate TypeScript declarations
 function generateTypeScriptDeclarations(functions: CppFunction[]): string {
-  const declarations = functions.map(func => {
-    const params = func.parameters.map(p => `${p.name}: ${cppToTsType(p.type)}`).join(', ');
-    const returnType = cppToTsType(func.returnType);
-    return `  ${func.name}: (${params}) => ${returnType};`;
-  }).join('\n');
-  
-  const exports = functions.map(func => {
+  return functions.map(func => {
     const params = func.parameters.map(p => `${p.name}: ${cppToTsType(p.type)}`).join(', ');
     const returnType = cppToTsType(func.returnType);
     return `export const ${func.name}: (${params}) => ${returnType};`;
   }).join('\n');
-  
-  return `declare module '*.cpp' {
-  const mod: {
-${declarations}
-  };
-  export default mod;
-  ${exports}
-}
-`;
 }
 
 export default function cppLoader(): Plugin {
   return {
     name: 'vite-cpp-loader',
+    configureServer(server) {
+      // Serve WASM files from the filesystem in development mode
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.endsWith('.wasm')) {
+          const wasmPath = path.join(process.cwd(), 'node_modules', '.cpp-wasm', path.basename(req.url));
+          res.setHeader('Content-Type', 'application/wasm');
+          fs.readFile(wasmPath)
+            .then(content => {
+              res.end(content);
+            })
+            .catch(() => {
+              next();
+            });
+        } else {
+          next();
+        }
+      });
+    },
     async load(id) {
       if (!id.endsWith('.cpp')) return;
 
       // Read the C++ file to extract function declarations
       const cppCode = await fs.readFile(id, 'utf-8');
       const functions = extractFunctionDeclarations(cppCode);
-
-      console.log('Found C++ functions:', functions);
 
       // Create output directory if it doesn't exist
       const outputDir = path.join(process.cwd(), 'node_modules', '.cpp-wasm');
@@ -122,7 +123,7 @@ export default function cppLoader(): Plugin {
       const baseName = path.basename(id, '.cpp');
       const jsOut = path.join(outputDir, baseName + '.js');
       const wasmOut = path.join(outputDir, baseName + '.wasm');
-      const dtsOut = path.join(path.dirname(id), baseName + '.d.ts');
+      const dtsOut = path.join(path.dirname(id), baseName + '.cpp.d.ts');
 
       // Generate and write TypeScript declarations
       const declarations = generateTypeScriptDeclarations(functions);
@@ -144,13 +145,17 @@ export default function cppLoader(): Plugin {
         throw new Error(`em++ failed to compile ${id}`);
       }
 
-      // Emit the .wasm file so Vite can serve it
-      const wasmSource = await fs.readFile(wasmOut);
-      this.emitFile({
-        type: 'asset',
-        fileName: path.basename(wasmOut),
-        source: wasmSource
-      });
+      // In serve mode, we serve the WASM file directly from the filesystem
+      const isServeMode = process.env.NODE_ENV === 'development';
+      if (!isServeMode) {
+        // Only emit files in build mode
+        const wasmSource = await fs.readFile(wasmOut);
+        this.emitFile({
+          type: 'asset',
+          fileName: path.basename(wasmOut),
+          source: wasmSource
+        });
+      }
 
       const exports = functions.map(func => `export const ${func.name} = mod.${func.name};`).join('\n');  
 
