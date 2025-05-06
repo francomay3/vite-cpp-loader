@@ -1,5 +1,5 @@
 {
-  "name": "cvite-cpp-loader",
+  "name": "vite-cpp-loader",
   "version": "0.1.1",
   "description": "A Vite plugin that enables seamless integration of C++ code with WebAssembly",
   "type": "module",
