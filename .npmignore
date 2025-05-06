@@ -1,0 +1,28 @@
+# Source files
+src/
+examples/
+
+# Development files
+.git/
+.gitignore
+.vscode/
+*.log
+*.tsbuildinfo
+
+# Test files
+tests/
+coverage/
+.nyc_output/
+
+# Build files
+dist/*.map
+dist/*.d.ts.map
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db 

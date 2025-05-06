@@ -13,9 +13,103 @@ A Vite plugin that enables seamless integration of C++ code with WebAssembly in 
 
 ## Prerequisites
 
-- [Emscripten](https://emscripten.org/docs/getting_started/downloads.html) installed and configured
-- Node.js 16+ and npm/yarn
-- Vite project
+### Emscripten Installation
+
+1. **macOS**:
+   ```bash
+   # Using Homebrew
+   brew install emscripten
+   
+   # Or using the official installer
+   git clone https://github.com/emscripten-core/emsdk.git
+   cd emsdk
+   ./emsdk install latest
+   ./emsdk activate latest
+   source ./emsdk_env.sh
+   ```
+
+2. **Windows**:
+   ```bash
+   # Using the official installer
+   git clone https://github.com/emscripten-core/emsdk.git
+   cd emsdk
+   emsdk install latest
+   emsdk activate latest
+   emsdk_env.bat
+   ```
+
+3. **Linux**:
+   ```bash
+   # Using the official installer
+   git clone https://github.com/emscripten-core/emsdk.git
+   cd emsdk
+   ./emsdk install latest
+   ./emsdk activate latest
+   source ./emsdk_env.sh
+   ```
+
+Verify the installation:
+```bash
+emcc --version
+```
+
+### VSCode Configuration
+
+To get proper C++ IntelliSense in VSCode, create a `.vscode/c_cpp_properties.json` file in your project:
+
+```json
+{
+  "configurations": [
+    {
+      "name": "Mac",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/usr/local/opt/emscripten/libexec/emscripten/system/include/**"
+      ],
+      "macFrameworkPath": [],
+      "compilerPath": "/usr/local/opt/emscripten/libexec/emscripten/emcc",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-x64"
+    },
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "C:/emsdk/upstream/emscripten/system/include/**"
+      ],
+      "compilerPath": "C:/emsdk/upstream/emscripten/emcc.bat",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ],
+  "version": 4
+}
+```
+
+To find the correct Emscripten include path:
+
+1. **macOS**:
+   ```bash
+   # If installed via Homebrew
+   ls /usr/local/opt/emscripten/libexec/emscripten/system/include
+   
+   # If installed via emsdk
+   ls ~/emsdk/upstream/emscripten/system/include
+   ```
+
+2. **Windows**:
+   ```bash
+   # Usually located at
+   dir C:\emsdk\upstream\emscripten\system\include
+   ```
+
+3. **Linux**:
+   ```bash
+   # Usually located at
+   ls ~/emsdk/upstream/emscripten/system/include
+   ```
 
 ## Installation
 
@@ -31,11 +125,11 @@ yarn add vite-cpp-loader --dev
 
 ```typescript
 import { defineConfig } from 'vite';
-import cppWasm from 'vite-plugin-cpp-wasm';
+import cppLoader from 'vite-cpp-loader';
 
 export default defineConfig({
   plugins: [
-    cppWasm()
+    cppLoader()
   ]
 });
 ```
@@ -95,6 +189,25 @@ The plugin automatically converts C++ types to TypeScript types:
 | unsigned | number          |
 | long     | number          |
 | short    | number          |
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Emscripten not found**:
+   - Make sure Emscripten is properly installed and in your PATH
+   - Try running `emcc --version` to verify the installation
+   - On Windows, you might need to restart your terminal after installation
+
+2. **Missing include files**:
+   - Verify your VSCode configuration has the correct include paths
+   - Make sure Emscripten is properly installed
+   - Try running `emcc -v` to see the include paths Emscripten is using
+
+3. **Compilation errors**:
+   - Check that your C++ code is valid
+   - Make sure you're using the correct Emscripten bindings syntax
+   - Verify that all required headers are included
 
 ## Contributing
 
