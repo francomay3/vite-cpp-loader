@@ -20,9 +20,9 @@ A Vite plugin that enables seamless integration of C++ code with WebAssembly in 
 ## Installation
 
 ```bash
-npm install vite-plugin-cpp-wasm --save-dev
+npm install vite-cpp-loader --save-dev
 # or
-yarn add vite-plugin-cpp-wasm --dev
+yarn add vite-cpp-loader --dev
 ```
 
 ## Usage
@@ -95,10 +95,6 @@ The plugin automatically converts C++ types to TypeScript types:
 | unsigned | number          |
 | long     | number          |
 | short    | number          |
-
-## Configuration
-
-The plugin works with zero configuration, but you can customize the Emscripten compilation options by modifying the `em++` command in the plugin code.
 
 ## Contributing
 
