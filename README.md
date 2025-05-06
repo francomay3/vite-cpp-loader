@@ -125,12 +125,19 @@ EMSCRIPTEN_BINDINGS(my_module) {
 
 3. Import and use in your TypeScript/JavaScript:
 
+**Note:** Since WebAssembly module initialization is asynchronous, all imported C++ functions return Promises. You need to use `await` when calling them:
+
 ```typescript
 import { add, greet } from './math.cpp';
 
-// Use the C++ functions directly
-console.log(add(2, 3)); // 5
-console.log(greet("World")); // "Hello, World!"
+// Use async/await to handle the Promises
+const result = await add(2, 3);
+console.log(result); // 5
+
+// Or use Promise chaining
+greet("World").then(result => {
+  console.log(result); // "Hello, World!"
+});
 ```
 
 ## How It Works

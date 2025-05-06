@@ -84,7 +84,7 @@ function generateTypeScriptDeclarations(functions: CppFunction[]): string {
   return functions.map(func => {
     const params = func.parameters.map(p => `${p.name}: ${cppToTsType(p.type)}`).join(', ');
     const returnType = cppToTsType(func.returnType);
-    return `export const ${func.name}: (${params}) => ${returnType};`;
+    return `export const ${func.name}: (${params}) => Promise<${returnType}>;`;
   }).join('\n');
 }
 
@@ -162,9 +162,52 @@ export default function cppLoader(): Plugin {
       // Return re-export stub with function information
       return `
         import factory from '${jsOut}';
-        const mod = await factory();
-        ${exports}
-        export default mod;
+        
+        let mod = null;
+        let initError = null;
+        let initPromise = null;
+        let isInitialized = false;
+
+        const waitForInit = async () => {
+          if (isInitialized) return mod;
+          if (initError) throw initError;
+          if (!initPromise) {
+            initPromise = factory().then(m => {
+              mod = m;
+              isInitialized = true;
+              return m;
+            }).catch(err => {
+              initError = err;
+              throw err;
+            });
+          }
+          return initPromise;
+        };
+
+        // Start initialization immediately
+        waitForInit();
+
+        const init = async () => {
+          return waitForInit();
+        };
+
+        // Create a proxy to handle both sync and async access
+        const createFunction = (name) => {
+          return function(...args) {
+            if (isInitialized) {
+              return mod[name](...args);
+            }
+            return waitForInit().then(m => m[name](...args));
+          };
+        };
+
+        // Export functions that can be used both sync and async
+        ${functions.map(func => `export const ${func.name} = createFunction('${func.name}');`).join('\n')}
+
+        export default {
+          init,
+          ${functions.map(func => func.name).join(',\n          ')}
+        };
       `;
     }
   };
