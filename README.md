@@ -66,7 +66,8 @@ To get proper C++ IntelliSense in VSCode, create a `.vscode/c_cpp_properties.jso
         "${workspaceFolder}/**",
         "/usr/local/opt/emscripten/libexec/emscripten/system/include/**",
         "C:/emsdk/upstream/emscripten/system/include/**",
-        "~/emsdk/upstream/emscripten/system/include/**"
+        "~/emsdk/upstream/emscripten/system/include/**",
+        "/opt/homebrew/include/emscripten"
       ],
       "macFrameworkPath": [],
       "compilerPath": "/usr/local/opt/emscripten/libexec/emscripten/emcc",
