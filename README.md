@@ -1,6 +1,6 @@
 # vite-cpp-loader
 
-A Vite plugin that enables seamless integration of C++ code with WebAssembly in your Vite projects. This plugin automatically compiles C++ files to WebAssembly and generates TypeScript declarations, making it easy to use C++ functions directly in your TypeScript/JavaScript code.
+A Vite plugin that lets you import C++ files directly into your TypeScript/JavaScript code. Write your C++ functions and use them in your frontend code with full type safety and hot module reloading. Under the hood, it uses Emscripten to compile your C++ code to WebAssembly, but you don't need to worry about that - just import and use your C++ functions as if they were TypeScript functions.
 
 ## Features
 
