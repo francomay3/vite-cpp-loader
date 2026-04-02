@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "name": "Emscripten",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/opt/homebrew/Cellar/emscripten/4.0.8/libexec/system/include/**"
+      ],
+      "cppStandard": "c++17",
+      "intelliSenseMode": "clang-x64"
+    }
+  ],
+  "version": 4
+}

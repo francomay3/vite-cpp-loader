@@ -2,14 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite C++ Loader Example</title>
+    <title>vite-cpp-loader example</title>
   </head>
   <body>
-    <div id="app">
-      <h1>Vite C++ Loader Example</h1>
-      <p>Check the console to see the C++ functions in action!</p>
-    </div>
+    <h1>vite-cpp-loader</h1>
+    <p>fib(n) — JS vs C++ (WASM)</p>
+
+    <label>n: <input id="n-input" type="number" value="42" min="1" max="45" /></label>
+    <button id="run-btn">Run</button>
+
+    <pre id="output"></pre>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
-</html> 
+</html>
