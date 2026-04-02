@@ -27,7 +27,7 @@ cd emsdk && emsdk install latest && emsdk activate latest && emsdk_env.bat
 ## Installation
 
 ```bash
-npm install vite-cpp-loader --save-dev
+npm install vite-plugin-cpp-loader --save-dev
 ```
 
 ## Setup
@@ -35,7 +35,7 @@ npm install vite-cpp-loader --save-dev
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import cppLoader from 'vite-cpp-loader';
+import cppLoader from 'vite-plugin-cpp-loader';
 
 export default defineConfig({
   plugins: [cppLoader()]
