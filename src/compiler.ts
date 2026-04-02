@@ -2,9 +2,9 @@ import { spawn, type SpawnOptions } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import type { CompileResult, CppLoaderOptions } from './types';
-import { readManifest, scheduleManifestWrite, isCacheValid } from './manifest';
-import { extractTopLevelFunctionNames, buildAutoBindings } from './parser';
+import type { CompileResult, CppLoaderOptions } from './types.js';
+import { readManifest, scheduleManifestWrite, isCacheValid } from './manifest.js';
+import { extractTopLevelFunctionNames, buildAutoBindings } from './parser.js';
 
 export interface ResolvedOptions extends Required<CppLoaderOptions> {
   cacheDir: string;

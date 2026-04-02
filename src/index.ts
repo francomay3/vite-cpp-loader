@@ -1,12 +1,12 @@
 import type { Plugin, ResolvedConfig } from 'vite';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import type { CppLoaderOptions } from './types';
-import { compile, type ResolvedOptions } from './compiler';
-import { extractFunctions } from './parser';
-import { generateDeclarations } from './declarations';
-import { generateModule } from './moduleTemplate';
-import { generateCppProperties } from './vscode';
+import type { CppLoaderOptions } from './types.js';
+import { compile, type ResolvedOptions } from './compiler.js';
+import { extractFunctions } from './parser.js';
+import { generateDeclarations } from './declarations.js';
+import { generateModule } from './moduleTemplate.js';
+import { generateCppProperties } from './vscode.js';
 
 const DEFAULT_CACHE_DIR = 'node_modules/.cpp-wasm';
 const DEFAULT_OPT_LEVEL = 'O2' as const;

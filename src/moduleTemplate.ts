@@ -1,4 +1,4 @@
-import type { CppFunction } from './types';
+import type { CppFunction } from './types.js';
 
 export function generateModule(jsPath: string, functions: CppFunction[]): string {
   const moduleUrl = jsPath.replace(/\\/g, '/');

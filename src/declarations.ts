@@ -1,4 +1,4 @@
-import type { CppFunction } from './types';
+import type { CppFunction } from './types.js';
 
 export function generateDeclarations(functions: CppFunction[]): string {
   const lines = functions.map(func => {

@@ -1,5 +1,5 @@
 import { promises as fs } from 'node:fs';
-import type { CppFunction } from './types';
+import type { CppFunction } from './types.js';
 
 export const CPP_TO_TS: Record<string, string> = {
   'int': 'number',

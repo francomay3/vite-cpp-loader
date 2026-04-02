@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import type { CacheManifest } from './types';
+import type { CacheManifest } from './types.js';
 
 let manifestWriteChain = Promise.resolve();
 
