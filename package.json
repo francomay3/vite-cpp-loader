@@ -1,6 +1,6 @@
 {
   "name": "vite-cpp-loader",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Vite plugin — import .cpp files as typed ES modules compiled to WebAssembly via Emscripten",
   "type": "module",
   "main": "dist/index.js",
