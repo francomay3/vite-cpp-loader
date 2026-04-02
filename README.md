@@ -1,6 +1,10 @@
-# vite-cpp-loader
+# vite-plugin-cpp-loader
 
-Import `.cpp` files directly into TypeScript. Functions compile to WebAssembly and are callable with full type safety.
+[![npm version](https://img.shields.io/npm/v/vite-plugin-cpp-loader)](https://www.npmjs.com/package/vite-plugin-cpp-loader)
+[![license](https://img.shields.io/npm/l/vite-plugin-cpp-loader)](./LICENSE)
+[![npm downloads](https://img.shields.io/npm/dm/vite-plugin-cpp-loader)](https://www.npmjs.com/package/vite-plugin-cpp-loader)
+
+Import `.cpp` files directly into TypeScript. Functions are automagically compiled to **WebAssembly via Emscripten** and callable with full type safety — no boilerplate, no manual `em++` invocations.
 
 ## Prerequisites
 
@@ -96,6 +100,15 @@ cppLoader({
   setupVSCode: false,              // disable auto-generation of .vscode/c_cpp_properties.json
 })
 ```
+
+## How it works
+
+1. Vite intercepts any `import` of a `.cpp` file.
+2. The plugin invokes `em++` (Emscripten) to compile the C++ to a `.wasm` binary + a JS glue module.
+3. Function bindings are generated automatically using **Embind** — no raw pointers or manual memory management.
+4. TypeScript declarations are inferred from the C++ signatures so your editor gets full autocompletion.
+
+The compiled `.wasm` is cached in `node_modules/.cpp-wasm` so rebuilds are near-instant when the source hasn't changed.
 
 ## Troubleshooting
 
