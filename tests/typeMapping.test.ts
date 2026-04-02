@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CPP_TO_TS } from '../src/parser';
+import { CPP_TO_TS } from '../src/parser.js';
 
 describe('CPP_TO_TS type map', () => {
   it.each([

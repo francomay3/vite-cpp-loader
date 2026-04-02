@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { CompilerDeps, ResolvedOptions, SpawnResult } from '../src/compiler';
+import type { CompilerDeps, ResolvedOptions, SpawnResult } from '../src/compiler.js';
 
 // Import compile after vi.mock calls are hoisted — use dynamic import inside tests
 // to get a fresh module per describe block is complex with ESM; instead we directly
@@ -38,12 +38,12 @@ function makeFs(manifestContent?: string, jsExists = true): Partial<CompilerDeps
 }
 
 describe('compile() — cache behavior', () => {
-  let compile: typeof import('../src/compiler').compile;
+  let compile: typeof import('../src/compiler.js').compile;
 
   beforeEach(async () => {
     // Re-import to reset module-level in-flight map between tests
     vi.resetModules();
-    const mod = await import('../src/compiler');
+    const mod = await import('../src/compiler.js');
     compile = mod.compile;
   });
 

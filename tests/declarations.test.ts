@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateDeclarations } from '../src/declarations';
-import type { CppFunction } from '../src/types';
+import { generateDeclarations } from '../src/declarations.js';
+import type { CppFunction } from '../src/types.js';
 
 describe('generateDeclarations', () => {
   it('produces empty string for an empty function list', () => {

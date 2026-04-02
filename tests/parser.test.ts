@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseTsd, parseRegexFallback, extractTopLevelFunctionNames, buildAutoBindings } from '../src/parser';
+import { parseTsd, parseRegexFallback, extractTopLevelFunctionNames, buildAutoBindings } from '../src/parser.js';
 
 describe('parseTsd', () => {
   it('returns empty array for empty interface', () => {
