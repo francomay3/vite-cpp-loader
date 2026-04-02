@@ -2,7 +2,9 @@ import { spawn, type SpawnOptions } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import type { CacheManifest, CompileResult, CppLoaderOptions } from './types';
+import type { CompileResult, CppLoaderOptions } from './types';
+import { readManifest, scheduleManifestWrite, isCacheValid } from './manifest';
+import { extractTopLevelFunctionNames, buildAutoBindings } from './parser';
 
 export interface ResolvedOptions extends Required<CppLoaderOptions> {
   cacheDir: string;
@@ -28,7 +30,6 @@ export interface CompilerDeps {
 }
 
 const inFlight = new Map<string, Promise<CompileResult>>();
-let manifestWriteChain = Promise.resolve();
 
 export function defaultSpawn(cmd: string, args: string[], opts?: SpawnOptions): Promise<SpawnResult> {
   return new Promise((resolve, reject) => {
@@ -58,29 +59,19 @@ function hashContent(content: string): string {
   return createHash('sha256').update(content, 'utf8').digest('hex').slice(0, 16);
 }
 
-async function readManifest(cacheDir: string, readFile: FsReadFile): Promise<CacheManifest> {
-  try {
-    const raw = await readFile(path.join(cacheDir, 'manifest.json'));
-    return JSON.parse(raw.toString()) as CacheManifest;
-  } catch {
-    return {};
+async function prepareTempFile(
+  id: string,
+  content: string,
+  options: ResolvedOptions,
+  deps: Required<CompilerDeps>
+): Promise<{ compileId: string; cleanup: () => Promise<void> }> {
+  if (content.includes('EMSCRIPTEN_BINDINGS')) {
+    return { compileId: id, cleanup: async () => {} };
   }
-}
-
-function scheduleManifestWrite(cacheDir: string, manifest: CacheManifest, writeFile: FsWriteFile): void {
-  manifestWriteChain = manifestWriteChain.then(() =>
-    writeFile(path.join(cacheDir, 'manifest.json'), JSON.stringify(manifest, null, 2))
-  );
-}
-
-async function isCacheValid(entry: CacheManifest[string] | undefined, hash: string, stat: FsStat): Promise<boolean> {
-  if (!entry || entry.hash !== hash) return false;
-  try {
-    await stat(entry.jsPath);
-    return true;
-  } catch {
-    return false;
-  }
+  const names = extractTopLevelFunctionNames(content);
+  const tmpPath = path.join(options.cacheDir, path.basename(id, '.cpp') + '__tmp.cpp');
+  await deps.writeFile(tmpPath, content + buildAutoBindings(names));
+  return { compileId: tmpPath, cleanup: () => fs.unlink(tmpPath).catch(() => {}) };
 }
 
 async function doCompile(
@@ -105,8 +96,10 @@ async function doCompile(
   const jsPath = path.join(options.cacheDir, baseName + '.js');
   const tsdPath = path.join(options.cacheDir, baseName + '.tsd.d.ts');
 
+  const { compileId, cleanup } = await prepareTempFile(id, content, options, deps);
+
   const args = [
-    id,
+    compileId,
     '-o', jsPath,
     `-${options.optimizationLevel}`,
     '-sEXPORT_ES6',
@@ -120,6 +113,8 @@ async function doCompile(
   ];
 
   const result = await deps.spawnFn('em++', args);
+  await cleanup();
+
   if (result.code !== 0) {
     throw new Error(`em++ failed to compile ${path.basename(id)}:\n${result.stderr}`);
   }

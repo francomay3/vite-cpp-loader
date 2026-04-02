@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseTsd, parseRegexFallback } from '../src/parser';
+import { parseTsd, parseRegexFallback, extractTopLevelFunctionNames, buildAutoBindings } from '../src/parser';
 
 describe('parseTsd', () => {
   it('returns empty array for empty interface', () => {
@@ -131,5 +131,51 @@ EMSCRIPTEN_BINDINGS(m) { emscripten::function("add", &add); }
     const result = parseRegexFallback(cpp);
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('add');
+  });
+});
+
+describe('extractTopLevelFunctionNames', () => {
+  it('extracts a single function name', () => {
+    const cpp = `int fib(int n) { return n; }`;
+    expect(extractTopLevelFunctionNames(cpp)).toEqual(['fib']);
+  });
+
+  it('extracts multiple function names', () => {
+    const cpp = `
+int add(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
+`;
+    expect(extractTopLevelFunctionNames(cpp)).toEqual(['add', 'sub']);
+  });
+
+  it('skips static functions', () => {
+    const cpp = `
+static int helper(int x) { return x; }
+int exported(int x) { return x; }
+`;
+    expect(extractTopLevelFunctionNames(cpp)).toEqual(['exported']);
+  });
+
+  it('ignores single-line comments', () => {
+    const cpp = `
+// int fake(int x) { return x; }
+int real(int x) { return x; }
+`;
+    expect(extractTopLevelFunctionNames(cpp)).toEqual(['real']);
+  });
+});
+
+describe('buildAutoBindings', () => {
+  it('generates an EMSCRIPTEN_BINDINGS block', () => {
+    const result = buildAutoBindings(['add', 'fib']);
+    expect(result).toContain('EMSCRIPTEN_BINDINGS(module)');
+    expect(result).toContain('emscripten::function("add", &add)');
+    expect(result).toContain('emscripten::function("fib", &fib)');
+    expect(result).toContain('#include <emscripten/bind.h>');
+  });
+
+  it('produces empty bindings block for no functions', () => {
+    const result = buildAutoBindings([]);
+    expect(result).toContain('EMSCRIPTEN_BINDINGS(module)');
   });
 });

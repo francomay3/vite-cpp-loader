@@ -1,7 +1,7 @@
 {
   "name": "vite-cpp-loader",
   "version": "2.0.0",
-  "description": "A Vite plugin that enables seamless integration of C++ code with WebAssembly",
+  "description": "Vite plugin — import .cpp files as typed ES modules compiled to WebAssembly via Emscripten",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -20,12 +20,28 @@
     "vite",
     "vite-plugin",
     "cpp",
+    "c++",
     "webassembly",
     "wasm",
-    "emscripten"
+    "emscripten",
+    "embind",
+    "native",
+    "loader",
+    "plugin",
+    "typescript",
+    "wasm-bindgen",
+    "cpp-to-wasm"
   ],
-  "author": "",
+  "author": "Franco May",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/francomay3/vite-cpp-loader.git"
+  },
+  "homepage": "https://github.com/francomay3/vite-cpp-loader#readme",
+  "bugs": {
+    "url": "https://github.com/francomay3/vite-cpp-loader/issues"
+  },
   "peerDependencies": {
     "vite": "^4.0.0 || ^5.0.0 || ^6.0.0"
   },

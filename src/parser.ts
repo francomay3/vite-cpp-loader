@@ -100,6 +100,30 @@ export function parseRegexFallback(cppSource: string): CppFunction[] {
   return functions;
 }
 
+export function extractTopLevelFunctionNames(cppSource: string): string[] {
+  const stripped = cppSource
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\n/g, ' ');
+
+  const names: string[] = [];
+  const functionRegex = /(\w[\w\s:]*?)\s+(\w+)\s*\(([^)]*)\)\s*\{/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = functionRegex.exec(stripped)) !== null) {
+    const [, rawReturn, name] = match;
+    if (rawReturn.trim().startsWith('static')) continue;
+    names.push(name);
+  }
+
+  return names;
+}
+
+export function buildAutoBindings(names: string[]): string {
+  const lines = names.map(n => `    emscripten::function("${n}", &${n});`).join('\n');
+  return `\n#include <emscripten/bind.h>\n\nEMSCRIPTEN_BINDINGS(module) {\n${lines}\n}\n`;
+}
+
 export async function extractFunctions(id: string, tsdPath: string | null): Promise<CppFunction[]> {
   if (tsdPath) {
     try {

@@ -44,16 +44,12 @@ export default defineConfig({
 
 ## Usage
 
+Write plain C++ — no Emscripten boilerplate required. All top-level non-static functions are automatically exported.
+
 **`math.cpp`**
 ```cpp
-#include <emscripten/bind.h>
-
 int add(int a, int b) {
     return a + b;
-}
-
-EMSCRIPTEN_BINDINGS(math) {
-    emscripten::function("add", &add);
 }
 ```
 
@@ -64,7 +60,7 @@ import { add } from './math.cpp';
 add(2, 3); // 5
 ```
 
-Only functions registered in `EMSCRIPTEN_BINDINGS` are exported.
+If you only want to export a subset of functions, mark the ones you want to keep internal as `static` and they will be excluded.
 
 ## Type safety
 
@@ -104,8 +100,6 @@ cppLoader({
 ## Troubleshooting
 
 **`em++` not found** — make sure Emscripten is installed and in your `PATH`. If you installed via emsdk, run `source ./emsdk_env.sh` before starting the dev server.
-
-**Function not found at runtime** — check that the function is registered in `EMSCRIPTEN_BINDINGS`.
 
 ## License
 
